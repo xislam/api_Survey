@@ -16,7 +16,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from api_v1.views import SnippetViewSet
+from rest_framework import renderers
+
+snippet_list = SnippetViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+snippet_detail = SnippetViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
+    path('snippets/', snippet_list, name='snippet-list'),
+    path('snippets/<int:pk>/', snippet_detail, name='snippet-detail'),
+
 ]

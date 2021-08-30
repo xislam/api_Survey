@@ -1,3 +1,6 @@
+import random
+
+from django.contrib.auth import get_user_model
 from django.db import models
 
 
@@ -29,9 +32,19 @@ class Choice(models.Model):
 
 
 class Answer(models.Model):
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
+                               null=True, blank=True)
     question = models.ForeignKey(Questions, on_delete=models.CASCADE,
                                  related_name="answers")
     multiple_choice = models.ManyToManyField(Choice, blank=True)
-    one_choice = models.ForeignKey(Choice, null=True,blank=True, on_delete=models.CASCADE,
+    one_choice = models.ForeignKey(Choice, null=True, blank=True, on_delete=models.CASCADE,
                                    related_name="answers_one_choice")
     self_text = models.TextField(null=True, blank=True)
+
+    def create_new_ref_number(self):
+        not_unique = True
+        while not_unique:
+            unique_ref = random.randint(1000000000, 9999999999)
+            if not Answer.objects.filter(Referrence_Number=unique_ref):
+                not_unique = False
+        return int(unique_ref)
